@@ -21,13 +21,13 @@ int main()
     assert(first.high == 3005.0);
     assert(first.low == 2606.0);
     assert(first.close == 3005.0);
-    assert(first.volume == 2075000);
+    assert(first.volume == 2075000.0);
     assert(first.open_interest == 0);
 
     const auto &last = bars.back();
     assert(last.date == "20251127");
     assert(last.close == 507.0);
-    assert(last.volume == 17300);
+    assert(last.volume == 17300.0);
 
     std::cout << "csv_loader_test passed\n";
     return 0;

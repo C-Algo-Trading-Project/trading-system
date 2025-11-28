@@ -36,7 +36,7 @@ namespace trading
         double high{};
         double low{};
         double close{};
-        std::uint64_t volume{};
+        double volume{};
         std::uint64_t open_interest{};
 
         while (in.read_row(ticker, period, date, time, open, high, low, close, volume, open_interest))

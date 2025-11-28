@@ -16,7 +16,7 @@ namespace trading
         double high{0.0};
         double low{0.0};
         double close{0.0};
-        std::uint64_t volume{0};
+        double volume{0.0};
         std::uint64_t open_interest{0};
     };
 
