@@ -12,11 +12,13 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 
 add_executable(trading_system
     src/main.cpp
+    src/data/csv_loader.cpp
 )
 
 target_include_directories(trading_system
     PRIVATE
         src
+        external/fast-cpp-csv-parser
 )
 
 if(BUILD_TESTING)
