@@ -1,7 +1,8 @@
-#include "csv.h"
 #include "data/csv_loader.h"
 
 #include <stdexcept>
+
+#include "csv.h"
 
 namespace trading
 {
@@ -13,7 +14,7 @@ namespace trading
             throw std::runtime_error("CSV file not found: " + csv_path.string());
         }
 
-        io::CSVReader<10> in(csv_path.string());
+        io::CSVReader<10, io::trim_chars<' ', '\t', '<', '>'>, io::no_quote_escape<','>> in(csv_path.string());
         in.read_header(io::ignore_extra_column,
                        "TICKER",
                        "PER",

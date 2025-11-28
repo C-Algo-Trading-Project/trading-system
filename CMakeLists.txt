@@ -23,4 +23,17 @@ target_include_directories(trading_system
 
 if(BUILD_TESTING)
     enable_testing()
+
+    add_executable(csv_loader_test
+        tests/csv_loader_test.cpp
+        src/data/csv_loader.cpp
+    )
+
+    target_include_directories(csv_loader_test
+        PRIVATE
+            src
+            external/fast-cpp-csv-parser
+    )
+
+    add_test(NAME csv_loader COMMAND csv_loader_test)
 endif()
