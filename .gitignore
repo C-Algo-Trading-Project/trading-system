@@ -46,3 +46,6 @@ out/
 
 # Visual Studio Code settings
 .vscode/
+
+# Ad-hoc testing files
+devtests/
