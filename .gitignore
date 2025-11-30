@@ -39,3 +39,13 @@
 
 # debug information files
 *.dwo
+
+# Build directory
+build/
+out/
+
+# Visual Studio Code settings
+.vscode/
+
+# Ad-hoc testing files
+devtests/
