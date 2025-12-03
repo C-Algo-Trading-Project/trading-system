@@ -7,7 +7,7 @@
 int main()
 {
     const auto fixture = std::filesystem::path(__FILE__).parent_path() / "data" / "sample.csv";
-    const auto bars = trading::load_bars_from_csv(fixture);
+    const auto bars = trading::loadBarsFromCsv(fixture);
 
     // file has 440 data rows (wc -l minus header).
     assert(bars.size() == 440);
@@ -22,7 +22,7 @@ int main()
     assert(first.low == 2606.0);
     assert(first.close == 3005.0);
     assert(first.volume == 2075000.0);
-    assert(first.open_interest == 0);
+    assert(first.openInterest == 0);
 
     const auto &last = bars.back();
     assert(last.date == "20251127");
