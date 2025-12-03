@@ -53,5 +53,17 @@ if(BUILD_TESTING)
 
     add_test(NAME twma COMMAND twma_test)
 
+    add_executable(vwma_test
+        tests/vwma_test.cpp
+        src/metrics/moving_average.cpp
+    )
+
+    target_include_directories(vwma_test
+        PRIVATE
+            src
+    )
+
+    add_test(NAME vwma COMMAND vwma_test)
+
 
 endif()
