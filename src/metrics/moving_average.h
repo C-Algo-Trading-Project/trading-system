@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <deque>
 #include "core/bar.h"
 
 namespace trading
@@ -36,6 +38,36 @@ namespace trading
         bool initialized_ = false;
         double ema_ = 0.0;
         SysDays lastDate_ = 0;
+    };
+
+    // Volume-weighted moving average over a fixed window.
+    // Supports incremental updates via update() or batch computation via compute().
+    class VolumeWeightedMovingAverage
+    {
+    public:
+        // Constructor
+        explicit VolumeWeightedMovingAverage(std::size_t windowSize);
+
+        // Reset internal state
+        void reset();
+
+        // Update VWMA using a new Bar
+        // Returns current VWMA; NaN if window not full
+        double update(const Bar &bar);
+
+        // Compute VWMA for each bar.
+        // Returns a vector the same length as bars; the first (windowSize - 1) entries are NaN
+        // because the window is not yet full.
+        static std::vector<double> compute(const std::vector<Bar> &bars, std::size_t windowSize);
+
+    private:
+        std::size_t windowSize_;
+        std::size_t count_;
+        std::deque<double> priceVolumeProducts_;
+        std::deque<double> volumes_;
+
+        double sumPriceVolumeProduct_;
+        double sumVolume_;
     };
 
 } // namespace trading

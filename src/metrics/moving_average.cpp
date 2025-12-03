@@ -1,6 +1,7 @@
 #include "metrics/moving_average.h"
 
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 #include <string>
 
@@ -97,6 +98,80 @@ namespace trading
         long jdn = d + (153 * m2 + 2) / 5 + 365L * y2 + y2 / 4 - y2 / 100 + y2 / 400 - 32045;
 
         return static_cast<SysDays>(jdn);
+    }
+
+    VolumeWeightedMovingAverage::VolumeWeightedMovingAverage(std::size_t windowSize)
+        : windowSize_(windowSize), count_(0), sumPriceVolumeProduct_(0.0), sumVolume_(0.0)
+    {
+        if (windowSize_ == 0)
+        {
+            throw std::invalid_argument("Invalid argument: windowSize must be > 0");
+        }
+    }
+
+    void VolumeWeightedMovingAverage::reset()
+    {
+        count_ = 0;
+        priceVolumeProducts_.clear();
+        volumes_.clear();
+        sumPriceVolumeProduct_ = 0.0;
+        sumVolume_ = 0.0;
+    }
+
+    double VolumeWeightedMovingAverage::update(const Bar &bar)
+    {
+        double priceVolumeProduct = bar.close * bar.volume;
+
+        priceVolumeProducts_.push_back(priceVolumeProduct);
+        volumes_.push_back(bar.volume);
+
+        sumPriceVolumeProduct_ += priceVolumeProduct;
+        sumVolume_ += bar.volume;
+        ++count_;
+
+        if (count_ > windowSize_)
+        {
+            // Remove oldest
+            sumPriceVolumeProduct_ -= priceVolumeProducts_.front();
+            sumVolume_ -= volumes_.front();
+            priceVolumeProducts_.pop_front();
+            volumes_.pop_front();
+        }
+
+        if (count_ < windowSize_)
+        {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+
+        return (sumVolume_ > 0.0) ? (sumPriceVolumeProduct_ / sumVolume_) : 0.0;
+    }
+
+    std::vector<double> VolumeWeightedMovingAverage::compute(const std::vector<Bar> &bars, std::size_t windowSize)
+    {
+        if (windowSize == 0 || bars.size() < windowSize)
+        {
+            throw std::invalid_argument("Invalid argument: windowSize must be > 0 and <= number of bars");
+        }
+
+        VolumeWeightedMovingAverage vwma(windowSize);
+        std::vector<double> result;
+        result.reserve(bars.size());
+
+        for (std::size_t i = 0; i < bars.size(); ++i)
+        {
+            double current = vwma.update(bars[i]);
+            if (i + 1 < windowSize)
+            {
+                // Window not full yet; indicate missing value
+                result.push_back(std::numeric_limits<double>::quiet_NaN());
+            }
+            else
+            {
+                result.push_back(current);
+            }
+        }
+
+        return result;
     }
 
 } // namespace trading
