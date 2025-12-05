@@ -49,3 +49,8 @@ out/
 
 # Ad-hoc testing files
 devtests/
+
+# Python
+venv/
+__pycache__/
+*.pyc
