@@ -7,14 +7,14 @@
 namespace trading
 {
 
-    std::vector<Bar> load_bars_from_csv(const std::filesystem::path &csv_path)
+    std::vector<Bar> loadBarsFromCsv(const std::filesystem::path &csvPath)
     {
-        if (!std::filesystem::exists(csv_path))
+        if (!std::filesystem::exists(csvPath))
         {
-            throw std::runtime_error("CSV file not found: " + csv_path.string());
+            throw std::runtime_error("CSV file not found: " + csvPath.string());
         }
 
-        io::CSVReader<10, io::trim_chars<' ', '\t', '<', '>'>, io::no_quote_escape<','>> in(csv_path.string());
+        io::CSVReader<10, io::trim_chars<' ', '\t', '<', '>'>, io::no_quote_escape<','>> in(csvPath.string());
         in.read_header(io::ignore_extra_column,
                        "TICKER",
                        "PER",
@@ -37,9 +37,9 @@ namespace trading
         double low{};
         double close{};
         double volume{};
-        std::uint64_t open_interest{};
+        std::uint64_t openInterest{};
 
-        while (in.read_row(ticker, period, date, time, open, high, low, close, volume, open_interest))
+        while (in.read_row(ticker, period, date, time, open, high, low, close, volume, openInterest))
         {
             bars.push_back(Bar{
                 ticker,
@@ -51,7 +51,7 @@ namespace trading
                 low,
                 close,
                 volume,
-                open_interest});
+                openInterest});
         }
 
         return bars;
