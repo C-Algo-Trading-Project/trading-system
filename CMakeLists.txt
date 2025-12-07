@@ -56,11 +56,13 @@ if(BUILD_TESTING)
     add_executable(vwma_test
         tests/vwma_test.cpp
         src/metrics/moving_average.cpp
+        src/data/csv_loader.cpp
     )
 
     target_include_directories(vwma_test
         PRIVATE
             src
+            external/fast-cpp-csv-parser
     )
 
     add_test(NAME vwma COMMAND vwma_test)

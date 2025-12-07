@@ -1,7 +1,12 @@
 #include <cassert>
-#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <vector>
+#include <cmath>
 
+#include "core/bar.h"
+#include "data/csv_loader.h"
 #include "metrics/moving_average.h"
 
 using trading::Bar;
@@ -58,6 +63,37 @@ int main()
 
     // Next window: [20*3, 30*1, 40*2] / (3+1+2) = (60+30+80)/6 = 170/6
     assert(nearlyEqual(batch3[3], 170.0 / 6.0));
+
+    // Write to CSV
+    // Load the same CSV as in csv_loader_test.cpp
+    const auto fixture =
+        std::filesystem::path(__FILE__).parent_path() / "data" / "sample.csv";
+
+    const auto bars = trading::loadBarsFromCsv(fixture);
+    assert(!bars.empty());
+
+    const auto vwmaSeries = VolumeWeightedMovingAverage::compute(bars, 5); // window size = 5
+    std::ofstream ofs("vwma_output.csv");
+    if (!ofs.is_open())
+    {
+        std::cerr << "Failed to open output CSV file\n";
+        return 1;
+    }
+
+    // Write CSV header
+    ofs << "date,close,vwma_5d\n";
+    std::cout << "date,close,vwma_5d\n";
+
+    // Dump bars + precomputed VWMA values
+    for (std::size_t i = 0; i < bars.size(); ++i)
+    {
+        const auto &bar = bars[i];
+        double currentVWMA = vwmaSeries[i];
+
+        ofs << bar.date << ","
+            << bar.close << ","
+            << currentVWMA << "\n";
+    }
 
     return 0;
 }
