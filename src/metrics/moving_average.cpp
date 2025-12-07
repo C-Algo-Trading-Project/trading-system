@@ -4,6 +4,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <chrono>
 
 namespace trading
 {
@@ -77,7 +78,7 @@ namespace trading
         return ema_;
     }
 
-    // Convert YYYYMMDD → days since epoch using Julian day number (JDN)
+    // Convert YYYYMMDD to days since epoch
     TimeWeightedMovingAverage::SysDays
     TimeWeightedMovingAverage::parseYyyyMmDd(const std::string &s)
     {
@@ -90,14 +91,34 @@ namespace trading
         int m = std::stoi(s.substr(4, 2));
         int d = std::stoi(s.substr(6, 2));
 
-        // JDN algorithm (valid for Gregorian calendar)
-        int a = (14 - m) / 2;
-        int y2 = y + 4800 - a;
-        int m2 = m + 12 * a - 3;
+        std::chrono::year_month_day ymd{
+            std::chrono::year{y},
+            std::chrono::month{ static_cast<unsigned int>(m) },
+            std::chrono::day{ static_cast<unsigned int>(d) }
+        };
 
-        long jdn = d + (153 * m2 + 2) / 5 + 365L * y2 + y2 / 4 - y2 / 100 + y2 / 400 - 32045;
+        std::chrono::sys_days sd{ ymd };
 
-        return static_cast<SysDays>(jdn);
+        return static_cast<SysDays>(sd.time_since_epoch().count());
+    }
+
+     std::vector<double> TimeWeightedMovingAverage::compute(const std::vector<Bar> &bars, std::size_t windowSize) {
+        if (bars.empty())
+        {
+            throw std::invalid_argument("Data vector is empty");
+        }
+
+        TimeWeightedMovingAverage twma(windowSize);
+        std::vector<double> result;
+        result.reserve(bars.size());
+
+        for (const auto &bar : bars)
+        {
+            double current = twma.update(bar);
+            result.push_back(current);
+        }
+
+        return result;
     }
 
     VolumeWeightedMovingAverage::VolumeWeightedMovingAverage(std::size_t windowSize)

@@ -29,6 +29,9 @@ namespace trading
         // Return current EMA value (throws if not initialized)
         double value() const;
 
+        // Return EMA for all bars.
+        static std::vector<double> compute(const std::vector<Bar> &bars, std::size_t windowSize);
+
     private:
         // Convert "YYYYMMDD" → sys_days using JDN
         static SysDays parseYyyyMmDd(const std::string &s);
