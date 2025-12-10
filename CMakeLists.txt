@@ -14,7 +14,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 add_executable(trading_system
     src/main.cpp
     src/data/csv_loader.cpp
-    src/functions/time_weighted_moving_average.cpp
+    src/metrics/moving_average.cpp
 )
 
 target_include_directories(trading_system
@@ -42,7 +42,7 @@ if(BUILD_TESTING)
     add_executable(twma_test
         tests/twma_test.cpp
         src/data/csv_loader.cpp
-        src/functions/time_weighted_moving_average.cpp
+        src/metrics/moving_average.cpp
     )
 
     target_include_directories(twma_test
@@ -52,6 +52,20 @@ if(BUILD_TESTING)
     )
 
     add_test(NAME twma COMMAND twma_test)
+
+    add_executable(vwma_test
+        tests/vwma_test.cpp
+        src/metrics/moving_average.cpp
+        src/data/csv_loader.cpp
+    )
+
+    target_include_directories(vwma_test
+        PRIVATE
+            src
+            external/fast-cpp-csv-parser
+    )
+
+    add_test(NAME vwma COMMAND vwma_test)
 
 
 endif()
