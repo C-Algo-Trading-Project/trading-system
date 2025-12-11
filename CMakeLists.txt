@@ -68,5 +68,17 @@ if(BUILD_TESTING)
 
     add_test(NAME vwma COMMAND vwma_test)
 
+    add_executable(return_metrics_test
+        tests/return_metrics_test.cpp
+        src/metrics/return_metrics.cpp
+    )
+
+    target_include_directories(return_metrics_test
+        PRIVATE
+            src
+    )
+
+    add_test(NAME return_metrics COMMAND return_metrics_test)
+
 
 endif()
