@@ -15,6 +15,7 @@ add_executable(trading_system
     src/main.cpp
     src/data/csv_loader.cpp
     src/metrics/moving_average.cpp
+    src/metrics/return_metrics.cpp
 )
 
 target_include_directories(trading_system
