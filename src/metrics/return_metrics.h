@@ -17,7 +17,7 @@ namespace trading
     class ReturnCalculator
     {
     public:
-        explicit ReturnCalculator(int periods_per_year = 252);
+        explicit ReturnCalculator(int periods_per_year = 245);
 
         // Compute return metrics from an equity curve (portfolio value per bar).
         ReturnMetrics from_equity(const std::vector<double> &equity) const;

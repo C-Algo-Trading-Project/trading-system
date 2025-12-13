@@ -12,7 +12,7 @@ namespace trading
 
     int ReturnCalculator::normalize_periods_per_year(int periods_per_year)
     {
-        return (periods_per_year > 0) ? periods_per_year : 252;
+        return (periods_per_year > 0) ? periods_per_year : 245;
     }
 
     ReturnMetrics ReturnCalculator::from_equity(const std::vector<double> &equity) const
