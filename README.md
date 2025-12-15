@@ -7,9 +7,13 @@ A C++ based stock trading system.
 ## Tests and sample data
 - Sample JPX CSV lives at `tests/data/sample.csv`.
 - Configure CMake for testing: `cmake -S . -B build -DBUILD_TESTING=ON`.
-- Run tests w/o output: `cmake --build build && ctest --test-dir build --output-on-failure`.
-- Run tests w output: `cmake --build build && ctest --test-dir build -V`.
+- Run tests: `cmake --build build && ctest --test-dir build --output-on-failure`.
 
 ## CSV format
 - Expected header columns (case-sensitive): `TICKER,PER,DATE,TIME,OPEN,HIGH,LOW,CLOSE,VOL,OPENINT`, wrapped in angle brackets (e.g., `<TICKER>`).
 - Date format `YYYYMMDD`, time `HHMMSS` (e.g., `000000`) as provided by source.
+
+## Install Python dependencies matploglib and Numpy
+python3 -m venv venv
+source venv/bin/activate
+pip install numpy matplotlib

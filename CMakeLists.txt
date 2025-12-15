@@ -16,6 +16,8 @@ add_executable(trading_system
     src/data/csv_loader.cpp
     src/metrics/moving_average.cpp
     src/metrics/return_metrics.cpp
+    src/metrics/calculate_equity_curve.cpp
+    src/metrics/drawdown.cpp
 )
 
 target_include_directories(trading_system
@@ -80,5 +82,19 @@ if(BUILD_TESTING)
 
     add_test(NAME return_metrics COMMAND return_metrics_test)
 
+        add_executable(drawdown_test
+        tests/drawdown_test.cpp
+        src/data/csv_loader.cpp
+        src/metrics/calculate_equity_curve.cpp
+        src/metrics/drawdown.cpp
+    )
+
+    target_include_directories(drawdown_test
+        PRIVATE
+            src
+            external/fast-cpp-csv-parser
+    )
+
+    add_test(NAME drawdown COMMAND drawdown_test)
 
 endif()
