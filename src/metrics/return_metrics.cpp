@@ -1,6 +1,7 @@
 #include "metrics/return_metrics.h"
 
 #include <stdexcept>
+#include <cmath>
 
 namespace trading
 {
@@ -28,7 +29,7 @@ namespace trading
             throw std::invalid_argument("equity start value cannot be zero");
         }
 
-        double sum_returns = 0.0;
+        double sum_log_returns = 0.0;
         std::size_t count = 0;
 
         for (std::size_t i = 1; i < equity.size(); ++i)
@@ -40,14 +41,14 @@ namespace trading
             }
 
             const double r = (equity[i] / prev) - 1.0;
-            sum_returns += r;
+            sum_log_returns += std::log1p(r);
             ++count;
         }
 
         ReturnMetrics metrics;
         metrics.cumulative_return = (equity.back() / starting_value) - 1.0;
-        metrics.avg_period_return = (count > 0) ? (sum_returns / static_cast<double>(count)) : 0.0;
-        metrics.annualized_return = metrics.avg_period_return * static_cast<double>(periods_per_year_);
+        metrics.avg_period_return = (count > 0) ? (sum_log_returns / static_cast<double>(count)) : 0.0;
+        metrics.annualized_return = std::expm1(metrics.avg_period_return * static_cast<double>(periods_per_year_));
 
         return metrics;
     }
@@ -59,19 +60,19 @@ namespace trading
             throw std::invalid_argument("returns vector must not be empty");
         }
 
-        double sum_returns = 0.0;
+        double sum_log_returns = 0.0;
         double growth_product = 1.0;
 
         for (double r : returns)
         {
             growth_product *= (1.0 + r);
-            sum_returns += r;
+            sum_log_returns += std::log1p(r);
         }
 
         ReturnMetrics metrics;
         metrics.cumulative_return = growth_product - 1.0;
-        metrics.avg_period_return = sum_returns / static_cast<double>(returns.size());
-        metrics.annualized_return = metrics.avg_period_return * static_cast<double>(periods_per_year_);
+        metrics.avg_period_return = sum_log_returns / static_cast<double>(returns.size());
+        metrics.annualized_return = std::expm1(metrics.avg_period_return * static_cast<double>(periods_per_year_));
 
         return metrics;
     }

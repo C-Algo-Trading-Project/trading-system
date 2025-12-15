@@ -8,7 +8,7 @@ namespace trading
     struct ReturnMetrics
     {
         double cumulative_return = 0.0;  // total growth - 1
-        double avg_period_return = 0.0;  // arithmetic mean of per-period returns
+        double avg_period_return = 0.0;  // Geometric annualized returns
         double annualized_return = 0.0;  // avg_period_return * periods_per_year
     };
 
